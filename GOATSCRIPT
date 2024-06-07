@@ -1,0 +1,132 @@
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("Youtube:Elv3rhub", "Ocean")
+
+-- MAIN
+local DupeTab = Window:NewTab("Dupe")
+local DupeSection = DupeTab:NewSection("Dupe🚽")
+
+DupeSection:NewButton("Dupe Units", "ButtonInfo", function()
+    local player = game.Players.LocalPlayer
+    wait(1)
+    print(1)
+    wait(2)
+    print(2)
+    wait(3)
+    print(3)
+    player:Kick("You have successfully duped your unit. Please rejoin the server!")
+end)
+
+DupeSection:NewButton("Dupe Gems💎", "It duplicates your gems", function()
+    print("Dupe Gems function executed")
+end)
+
+-- Farm Tab
+local FarmTab = Window:NewTab("Farm Coins💰")
+local FarmSection = FarmTab:NewSection("Farm")
+
+FarmSection:NewButton("Farm Coins", "ButtonInfo", function()
+    print("Farm Coins function executed")
+end)
+
+-- Settings Tab
+local SettingsTab = Window:NewTab("Settings⚙️")
+local SettingsSection = SettingsTab:NewSection("Settings")
+
+SettingsSection:NewButton("Toggle Sound", "ButtonInfo", function()
+    print("Toggle Sound function executed")
+end)
+
+-- Player Tab
+local PlayerTab = Window:NewTab("Player")
+local PlayerSection = PlayerTab:NewSection("Player")
+
+PlayerSection:NewSlider("Walk Speed", "Adjust the player's walk speed", 100, 16, function(value)
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if humanoid then
+        humanoid.WalkSpeed = value
+    end
+    print("Walk Speed set to " .. value)
+end)
+
+PlayerSection:NewSlider("Jump Power", "Adjust the player's jump power", 100, 50, function(value)
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if humanoid then
+        humanoid.JumpPower = value
+    end
+    print("Jump Power set to " .. value)
+end)
+
+local fly = false
+local flySpeed = 50
+local keys = {W = false, A = false, S = false, D = false}
+
+PlayerSection:NewButton("Fly", "Toggle fly mode", function()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local root = character:WaitForChild("HumanoidRootPart")
+
+    local function startFly()
+        local bp = Instance.new("BodyPosition", root)
+        local bg = Instance.new("BodyGyro", root)
+        bp.Name = "FlyBP"
+        bg.Name = "FlyBG"
+        bp.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+        bp.D = 10
+        bp.P = 50
+        bg.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+        bg.P = 50
+        
+        game:GetService("RunService").Stepped:Connect(function()
+            if fly then
+                local moveDirection = Vector3.new()
+                if keys.W then moveDirection = moveDirection + (workspace.CurrentCamera.CFrame.LookVector) end
+                if keys.S then moveDirection = moveDirection - (workspace.CurrentCamera.CFrame.LookVector) end
+                if keys.A then moveDirection = moveDirection - (workspace.CurrentCamera.CFrame.RightVector) end
+                if keys.D then moveDirection = moveDirection + (workspace.CurrentCamera.CFrame.RightVector) end
+                moveDirection = moveDirection * flySpeed
+
+                bp.Position = root.Position + moveDirection
+                bg.CFrame = workspace.CurrentCamera.CFrame
+            else
+                bp:Destroy()
+                bg:Destroy()
+            end
+        end)
+    end
+
+    fly = not fly
+    if fly then
+        startFly()
+        print("Fly mode activated")
+    else
+        fly = false
+        if root:FindFirstChild("FlyBP") then
+            root.FlyBP:Destroy()
+            root.FlyBG:Destroy()
+        end
+        print("Fly mode deactivated")
+    end
+end)
+
+local function onInputBegan(input, gameProcessed)
+    if gameProcessed then return end
+    if input.KeyCode == Enum.KeyCode.W then keys.W = true end
+    if input.KeyCode == Enum.KeyCode.A then keys.A = true end
+    if input.KeyCode == Enum.KeyCode.S then keys.S = true end
+    if input.KeyCode == Enum.KeyCode.D then keys.D = true end
+end
+
+local function onInputEnded(input, gameProcessed)
+    if gameProcessed then return end
+    if input.KeyCode == Enum.KeyCode.W then keys.W = false end
+    if input.KeyCode == Enum.KeyCode.A then keys.A = false end
+    if input.KeyCode == Enum.KeyCode.S then keys.S = false end
+    if input.KeyCode == Enum.KeyCode.D then keys.D = false end
+end
+
+game:GetService("UserInputService").InputBegan:Connect(onInputBegan)
+game:GetService("UserInputService").InputEnded:Connect(onInputEnded)
