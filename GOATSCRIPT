@@ -24,7 +24,7 @@ local player = game.Players.LocalPlayer
     print(2)
     wait(3)
     print(3)
-    player:Kick("You have duped your units!Please rejoin to the server!")
+    player:Kick("You have duped your gems!Please rejoin to the server!")
 end)
 
 -- Farm Tab
