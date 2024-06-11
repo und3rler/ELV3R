@@ -17,7 +17,14 @@ DupeSection:NewButton("Dupe Units", "ButtonInfo", function()
 end)
 
 DupeSection:NewButton("Dupe Gems💎", "It duplicates your gems", function()
-    print("Dupe Gems function executed")
+local player = game.Players.LocalPlayer
+    wait(1)
+    print(1)
+    wait(2)
+    print(2)
+    wait(3)
+    print(3)
+    player:Kick("You have successfully duped your unit. Please rejoin the server!")
 end)
 
 -- Farm Tab
